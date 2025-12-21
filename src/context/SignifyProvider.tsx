@@ -36,6 +36,11 @@ import {
   navigateTo,
   reloadPage,
 } from "../utils/url";
+import {
+  cacheSession,
+  getCachedSession,
+  clearCachedSession,
+} from "../utils/storage";
 
 /**
  * SignifyProvider - Wrap your app with this provider to enable Signify iD authentication
@@ -112,10 +117,13 @@ export function SignifyProvider({
         if (data.valid) {
           setIsAuthenticated(true);
           setSession(data);
-          logger.log("Session is valid, user authenticated");
+          // Cache session to localStorage to avoid re-validation on refresh
+          cacheSession(data);
+          logger.log("Session is valid, user authenticated (cached)");
         } else {
           setIsAuthenticated(false);
           setSession(null);
+          clearCachedSession();
           logger.log("Session is invalid");
         }
       } catch (error) {
@@ -164,8 +172,9 @@ export function SignifyProvider({
     setIsAuthenticated(false);
     setSession(null);
 
-    // Clear cookie
+    // Clear cookie and cached session
     deleteCookie(config.cookieName);
+    clearCachedSession();
 
     // Reload page to ensure clean state
     if (isBrowser()) {
@@ -197,7 +206,20 @@ export function SignifyProvider({
       // Validate with the token
       validateSession(token);
     } else {
-      // Check if we have an existing cookie
+      // First, check if we have a cached session in localStorage
+      const cachedSession = getCachedSession();
+
+      if (cachedSession) {
+        logger.log(
+          "Using cached session from localStorage (avoiding server call)"
+        );
+        setIsAuthenticated(true);
+        setSession(cachedSession);
+        setIsLoading(false);
+        return;
+      }
+
+      // No cache - check if we have an existing cookie
       const existingToken = getCookie(config.cookieName);
 
       if (existingToken) {
