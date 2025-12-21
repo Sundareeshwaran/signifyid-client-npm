@@ -1,77 +1,60 @@
 {
   "name": "signifyid-client",
-  "version": "0.1.0",
-  "description": "Official Signify iD Client SDK for React applications",
-  "keywords": [
-    "signifyid",
-    "authentication",
-    "oauth",
-    "oidc",
-    "react",
-    "hooks",
-    "identity",
-    "access-management"
-  ],
-  "homepage": "https://docs.signifyid.com/sdk",
-  "bugs": {
-    "url": "https://github.com/signifyid/client/issues"
-  },
+  "version": "1.0.0",
+  "description": "Official React SDK for Signify iD - Digital Identity & Access Management",
+  "author": "Signify iD",
+  "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/signifyid/client.git"
+    "url": "https://github.com/signifyid/client.git"
   },
-  "license": "MIT",
-  "author": "Signify iD",
-  "type": "module",
+  "keywords": [
+    "signify",
+    "signifyid",
+    "auth",
+    "authentication",
+    "sso",
+    "react",
+    "nextjs",
+    "identity",
+    "oauth"
+  ],
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
-    },
-    "./react": {
-      "types": "./dist/react.d.ts",
-      "import": "./dist/react.js",
-      "require": "./dist/react.cjs"
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
     }
   },
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "files": [
     "dist",
     "README.md"
   ],
+  "sideEffects": false,
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
-    "lint": "eslint src/",
     "typecheck": "tsc --noEmit",
-    "clean": "rimraf dist",
     "prepublishOnly": "npm run build"
+  },
+  "peerDependencies": {
+    "react": ">=17.0.0",
+    "react-dom": ">=17.0.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "rimraf": "^5.0.0",
     "tsup": "^8.0.0",
-    "typescript": "^5.0.0"
-  },
-  "peerDependencies": {
-    "react": "^18.0.0 || ^19.0.0",
-    "react-dom": "^18.0.0 || ^19.0.0"
-  },
-  "peerDependenciesMeta": {
-    "react": {
-      "optional": true
-    },
-    "react-dom": {
-      "optional": true
-    }
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "module": "./dist/index.js"
+    "typescript": "^5.3.0"
+  }
 }

@@ -1,39 +1,72 @@
 /**
- * @signifyid/client - Main Entry Point
+ * @signifyid/client - Official React SDK for Signify iD
  *
- * Core exports for the Signify iD Client SDK.
- * For React-specific exports, use '@signifyid/client/react'.
+ * Digital Identity & Access Management
+ *
+ * @example
+ * ```tsx
+ * import { SignifyProvider, useSignifyAuth, ProtectedRoute } from '@signifyid/client';
+ *
+ * function App() {
+ *   return (
+ *     <SignifyProvider
+ *       config={{
+ *         apiUrl: "https://api.signifyid.com",
+ *         loginUrl: "https://signifyid.com/client/login"
+ *       }}
+ *     >
+ *       <ProtectedRoute>
+ *         <Dashboard />
+ *       </ProtectedRoute>
+ *     </SignifyProvider>
+ *   );
+ * }
+ * ```
  *
  * @packageDocumentation
  */
 
+// Components
+export { SignifyProvider } from "./context/SignifyProvider";
+export { ProtectedRoute } from "./components/ProtectedRoute";
+
+// Hooks
+export { useSignifyAuth } from "./hooks/useSignifyAuth";
+export { useSignifyConfig } from "./context/SignifyContext";
+
 // Types
 export type {
   SignifyConfig,
-  SignifyUser,
   SignifySession,
-  SignifyError,
-  LoginOptions,
-  LogoutOptions,
-  TokenRefreshResult,
-  LoginResponse,
-  SessionValidateResponse,
+  SignifyUser,
+  SignifyAuthState,
+  SignifyProviderProps,
+  ProtectedRouteProps,
 } from "./types";
 
-// API Client
-export { SignifyApiClient, createSignifyClient } from "./api-client";
+export { DEFAULT_CONFIG } from "./types";
 
-// Errors
-export { SignifyAuthError, parseAuthError } from "./errors";
-
-// Utilities
+// Utilities (for advanced usage)
 export {
+  setCookie,
+  getCookie,
+  deleteCookie,
+  hasCookie,
   isBrowser,
-  generateState,
-  storeState,
-  retrieveState,
-  validateState,
-  parseJwt,
-  isTokenExpired,
-  formatTimeRemaining,
-} from "./utils";
+} from "./utils/cookies";
+
+export {
+  getTokenFromUrl,
+  cleanUrlParams,
+  buildLoginUrl,
+  getCurrentUrl,
+  navigateTo,
+  reloadPage,
+} from "./utils/url";
+
+export {
+  setStorageItem,
+  getStorageItem,
+  removeStorageItem,
+  isStorageAvailable,
+} from "./utils/storage";

@@ -3,32 +3,35 @@ node_modules/
 
 # Build output
 dist/
-build/
-
-# Environment files
-.env
-.env.local
-.env.*.local
 
 # IDE
-.vscode/
 .idea/
+.vscode/
 *.swp
 *.swo
 
-# OS files
+# OS
 .DS_Store
 Thumbs.db
 
 # Logs
 *.log
 npm-debug.log*
-pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# Test coverage
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Testing
 coverage/
 
-# Temporary files
-*.tmp
-*.temp
-.cache/
+# TypeScript cache
+*.tsbuildinfo
+
+# Package manager locks (optional - uncomment if you want to ignore)
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
