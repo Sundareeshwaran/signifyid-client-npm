@@ -1,10 +1,10 @@
-# signifyid/client
+# signifyid-client
 
 Official React SDK for **Signify iD** - Digital Identity & Access Management.
 
 Authenticate users in your React or Next.js app with Signify iD in under 5 minutes.
 
-[![npm version](https://img.shields.io/npm/v/signifyid/client.svg)](https://www.npmjs.com/package/signifyid/client)
+[![npm version](https://img.shields.io/npm/v/signifyid-client.svg)](https://www.npmjs.com/package/signifyid-client)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -24,15 +24,15 @@ This SDK enables seamless integration with Signify iD's redirect-based authentic
 ## Installation
 
 ```bash
-npm install signifyid/client
+npm install signifyid-client
 ```
 
 ```bash
-yarn add signifyid/client
+yarn add signifyid-client
 ```
 
 ```bash
-pnpm add signifyid/client
+pnpm add signifyid-client
 ```
 
 ---
@@ -43,7 +43,7 @@ pnpm add signifyid/client
 
 ```tsx
 // app/layout.tsx (Next.js App Router)
-import { SignifyProvider } from "signifyid/client";
+import { SignifyProvider } from "signifyid-client";
 
 export default function RootLayout({ children }) {
   return (
@@ -67,7 +67,7 @@ export default function RootLayout({ children }) {
 
 ```tsx
 // app/dashboard/page.tsx
-import { ProtectedRoute } from "signifyid/client";
+import { ProtectedRoute } from "signifyid-client";
 import Dashboard from "./Dashboard";
 
 export default function DashboardPage() {
@@ -85,7 +85,7 @@ export default function DashboardPage() {
 // components/Navbar.tsx
 "use client";
 
-import { useSignifyAuth } from "signifyid/client";
+import { useSignifyAuth } from "signifyid-client";
 
 export function Navbar() {
   const { isAuthenticated, isLoading, user, login, logout } = useSignifyAuth();
@@ -221,7 +221,7 @@ const config = useSignifyConfig();
 
 ```tsx
 // app/layout.tsx
-import { SignifyProvider } from "signifyid/client";
+import { SignifyProvider } from "signifyid-client";
 
 export default function RootLayout({
   children,
@@ -248,7 +248,7 @@ export default function RootLayout({
 
 ```tsx
 // app/dashboard/layout.tsx
-import { ProtectedRoute } from "signifyid/client";
+import { ProtectedRoute } from "signifyid-client";
 
 export default function DashboardLayout({
   children,
@@ -274,7 +274,7 @@ export default function DashboardLayout({
 ```tsx
 // pages/_app.tsx
 import type { AppProps } from "next/app";
-import { SignifyProvider } from "signifyid/client";
+import { SignifyProvider } from "signifyid-client";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
@@ -292,7 +292,7 @@ export default function App({ Component, pageProps }: AppProps) {
 
 ```tsx
 // pages/dashboard.tsx
-import { ProtectedRoute, useSignifyAuth } from "signifyid/client";
+import { ProtectedRoute, useSignifyAuth } from "signifyid-client";
 
 function DashboardContent() {
   const { user, logout } = useSignifyAuth();
@@ -329,7 +329,7 @@ import type {
   SignifyAuthState,
   SignifyProviderProps,
   ProtectedRouteProps,
-} from "signifyid/client";
+} from "signifyid-client";
 ```
 
 ### Custom User Type
@@ -394,7 +394,7 @@ import {
   getTokenFromUrl,
   cleanUrlParams,
   isBrowser,
-} from "signifyid/client";
+} from "signifyid-client";
 ```
 
 ---
