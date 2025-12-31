@@ -1,6 +1,6 @@
 {
   "name": "signifyid-client",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Official React SDK for Signify iD - Digital Identity & Access Management",
   "author": "Signify iD",
   "license": "MIT",
