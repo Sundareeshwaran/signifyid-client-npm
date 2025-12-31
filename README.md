@@ -1,27 +1,34 @@
 # signifyid-client
 
-Official React SDK for **Signify iD** - Digital Identity & Access Management.
+<div align="center">
 
-Authenticate users in your React or Next.js app with Signify iD in under 5 minutes.
+Official React SDK for Signify iD - Digital Identity & Access Management
 
 [![npm version](https://img.shields.io/npm/v/signifyid-client.svg)](https://www.npmjs.com/package/signifyid-client)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![React Version](https://img.shields.io/badge/React-%3E%3D17.0.0-blue.svg)](https://reactjs.org/)
 
-## What is Signify iD?
+</div>
 
-Signify iD is a modern Digital Identity & Access Management platform that provides:
+## Overview
 
-- **Single Sign-On (SSO)** - One login for all your applications
-- **Session Management** - Secure, token-based authentication
-- **User Management** - Comprehensive user administration
-- **Multi-Factor Authentication** - Enhanced security options
+**signifyid-client** is a production-ready React SDK that provides seamless integration with Signify iD's authentication platform. It supports both CommonJS and ES Module builds with full TypeScript support, making it compatible with modern React applications, Next.js, and beyond.
 
-This SDK enables seamless integration with Signify iD's redirect-based authentication flow.
+### Key Features
 
----
+- **Single Sign-On (SSO)** - Unified authentication across multiple applications
+- **Session Management** - Secure, token-based authentication with automatic refresh
+- **Protected Routes** - Built-in component for authentication-gated routes
+- **Multi-Factor Authentication** - Support for enhanced security options
+- **TypeScript First** - Complete type definitions included
+- **Framework Agnostic** - Works with React, Next.js (App & Pages Router), and standard React SPAs
+- **SSR Safe** - Proper handling of server-side rendering concerns
+- **Zero External Dependencies** - Minimal bundle size impact
 
 ## Installation
+
+Install the package using your preferred package manager:
 
 ```bash
 npm install signifyid-client
@@ -35,17 +42,36 @@ yarn add signifyid-client
 pnpm add signifyid-client
 ```
 
----
+### Prerequisites
 
-## Quick Start (5 minutes)
+- React 17.0.0 or higher
+- React DOM 17.0.0 or higher
 
-### 1. Wrap your app with SignifyProvider
+## Quick Start
+
+### Step 1: Configure Environment Variables
+
+Add the required configuration to your environment file:
+
+```bash
+# .env.local (Next.js) or .env
+NEXT_PUBLIC_SIGNIFY_API_URL=https://api.signifyid.com
+NEXT_PUBLIC_SIGNIFY_LOGIN_URL=https://signifyid.com/client/login
+```
+
+### Step 2: Initialize the Provider
+
+Wrap your application with `SignifyProvider`:
 
 ```tsx
 // app/layout.tsx (Next.js App Router)
 import { SignifyProvider } from "signifyid-client";
 
-export default function RootLayout({ children }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html>
       <body>
@@ -63,7 +89,9 @@ export default function RootLayout({ children }) {
 }
 ```
 
-### 2. Protect routes that require authentication
+### Step 3: Protect Routes
+
+Use `ProtectedRoute` to guard components requiring authentication:
 
 ```tsx
 // app/dashboard/page.tsx
@@ -79,10 +107,11 @@ export default function DashboardPage() {
 }
 ```
 
-### 3. Use the auth hook in your components
+### Step 4: Access Authentication State
+
+Use the `useSignifyAuth` hook to interact with authentication:
 
 ```tsx
-// components/Navbar.tsx
 "use client";
 
 import { useSignifyAuth } from "signifyid-client";
@@ -91,53 +120,57 @@ export function Navbar() {
   const { isAuthenticated, isLoading, user, login, logout } = useSignifyAuth();
 
   if (isLoading) {
-    return <nav>Loading...</nav>;
+    return <nav>Loading authentication state...</nav>;
   }
 
   return (
     <nav>
       {isAuthenticated ? (
         <>
-          <span>Welcome, {user?.name}!</span>
-          <button onClick={logout}>Logout</button>
+          <span>Welcome, {user?.name}</span>
+          <button onClick={logout}>Sign Out</button>
         </>
       ) : (
-        <button onClick={login}>Login with Signify iD</button>
+        <button onClick={login}>Sign In with Signify iD</button>
       )}
     </nav>
   );
 }
 ```
 
-### 4. Set up environment variables
-
-```bash
-# .env.local
-NEXT_PUBLIC_SIGNIFY_API_URL=https://api.signifyid.com
-NEXT_PUBLIC_SIGNIFY_LOGIN_URL=https://signifyid.com/client/login
-```
-
-**That's it! 🎉** Your app now supports Signify iD authentication.
-
 ---
 
-## API Reference
+## Core API
 
 ### SignifyProvider
 
-The root provider that enables Signify iD authentication throughout your app.
+Root provider component that establishes the authentication context throughout your application.
+
+**Props:**
+
+- `config` (required) - Configuration object with:
+  - `apiUrl` (string) - Backend API endpoint URL
+  - `loginUrl` (string) - Signify iD login page URL
+  - `cookieName?` (string) - Session cookie name (default: `"clientSession"`)
+  - `cookieMaxAge?` (number) - Cookie expiration in seconds (default: `86400`)
+  - `tokenParam?` (string) - URL parameter for token extraction (default: `"token"`)
+  - `debug?` (boolean) - Enable debug logging (default: `false`)
+- `onAuthStateChange?` - Callback function invoked on authentication state changes
+
+**Example:**
 
 ```tsx
 <SignifyProvider
   config={{
-    apiUrl: string;           // Required: Backend API URL
-    loginUrl: string;         // Required: Signify iD login page URL
-    cookieName?: string;      // Optional: Cookie name (default: "clientSession")
-    cookieMaxAge?: number;    // Optional: Cookie max age in seconds (default: 86400)
-    tokenParam?: string;      // Optional: URL token parameter (default: "token")
-    debug?: boolean;          // Optional: Enable debug logging (default: false)
+    apiUrl: "https://api.signifyid.com",
+    loginUrl: "https://signifyid.com/client/login",
+    debug: process.env.NODE_ENV === "development",
   }}
-  onAuthStateChange?: (state) => void  // Optional: Callback on auth state changes
+  onAuthStateChange={(state) => {
+    if (state.isAuthenticated) {
+      // Handle authenticated state
+    }
+  }}
 >
   {children}
 </SignifyProvider>
@@ -145,79 +178,122 @@ The root provider that enables Signify iD authentication throughout your app.
 
 ### useSignifyAuth
 
-Hook to access authentication state and methods.
+Hook to access authentication state and methods within a SignifyProvider context.
+
+**Returns:**
+| Property | Type | Description |
+|----------|------|-------------|
+| `isAuthenticated` | `boolean` | User authentication status |
+| `isLoading` | `boolean` | Session validation in progress |
+| `session` | `SignifySession \| null` | Complete session object |
+| `user` | `SignifyUser \| null` | Authenticated user data |
+| `login()` | `() => void` | Redirect to Signify iD login page |
+| `logout()` | `() => Promise<void>` | Clear session and sign out user |
+| `validateSession()` | `() => Promise<void>` | Manually validate session |
+
+**Example:**
 
 ```tsx
-const {
-  isAuthenticated, // boolean: Whether user is authenticated
-  isLoading, // boolean: Whether auth is being validated
-  session, // SignifySession | null: Full session data
-  user, // SignifyUser | null: User data (shortcut for session.user)
-  login, // () => void: Redirect to Signify iD login
-  logout, // () => Promise<void>: Log out and clear session
-  validateSession, // () => Promise<void>: Manually re-validate session
-} = useSignifyAuth();
+"use client";
+
+import { useSignifyAuth } from "signifyid-client";
+
+export function Profile() {
+  const { user, isLoading, logout } = useSignifyAuth();
+
+  if (isLoading) return <div>Loading...</div>;
+
+  return (
+    <div>
+      <h1>{user?.name}</h1>
+      <button onClick={logout}>Sign Out</button>
+    </div>
+  );
+}
 ```
 
 ### ProtectedRoute
 
-Component that protects children by requiring authentication.
+Component that conditionally renders children only when user is authenticated.
+
+**Props:**
+
+- `children` (required) - Component to render when authenticated
+- `loadingComponent?` - Loading UI displayed during session validation
+- `redirectUrl?` - Custom redirect URL (default: login URL)
+- `onRedirect?` - Callback before redirect to login
+
+**Example:**
 
 ```tsx
-<ProtectedRoute
-  loadingComponent?: React.ReactNode  // Optional: Custom loading UI
-  redirectUrl?: string                 // Optional: Custom redirect URL
-  onRedirect?: () => void              // Optional: Callback before redirect
->
-  {children}
+<ProtectedRoute loadingComponent={<LoadingSpinner />} redirectUrl="/auth/login">
+  <Dashboard />
 </ProtectedRoute>
 ```
 
 ### useSignifyConfig
 
-Hook to access the resolved configuration.
+Hook to access resolved configuration values.
+
+**Returns:** Configuration object containing all provider settings
 
 ```tsx
 const config = useSignifyConfig();
-// Returns: { apiUrl, loginUrl, cookieName, cookieMaxAge, tokenParam, debug }
+console.log(config.apiUrl);
+```
+
+### Utility Functions
+
+Exported utility functions for advanced use cases:
+
+```tsx
+import {
+  setCookie, // Set HTTP cookie
+  getCookie, // Retrieve cookie value
+  deleteCookie, // Remove cookie
+  getTokenFromUrl, // Extract token from URL parameters
+  cleanUrlParams, // Remove parameters from URL
+  isBrowser, // Check if running in browser environment
+} from "signifyid-client";
 ```
 
 ---
 
 ## Authentication Flow
 
+The SDK follows a redirect-based OAuth-style authentication pattern:
+
 ```
-┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
-│   Your App      │     │   Signify iD    │     │  Signify API    │
-│                 │     │   Login Page    │     │                 │
-└────────┬────────┘     └────────┬────────┘     └────────┬────────┘
-         │                       │                       │
-         │  1. User visits       │                       │
-         │     protected route   │                       │
-         │                       │                       │
-         │  2. Redirect ────────>│                       │
-         │     ?redirect=...     │                       │
-         │                       │                       │
-         │                       │  3. User logs in      │
-         │                       │                       │
-         │  4. Redirect back <───│                       │
-         │     ?token=...        │                       │
-         │                       │                       │
-         │  5. SDK extracts token, stores in cookie      │
-         │                       │                       │
-         │  6. Validate session ─────────────────────────>│
-         │                       │                       │
-         │  7. Session data <────────────────────────────│
-         │                       │                       │
-         │  8. User authenticated│                       │
-         │     ✓                 │                       │
+┌──────────────────┐        ┌─────────────────┐        ┌────────────────┐
+│  Your App        │        │  Signify iD     │        │  Backend API   │
+│                  │        │  Login Portal   │        │                │
+└────────┬─────────┘        └────────┬────────┘        └────────┬───────┘
+         │                          │                          │
+         │  1. User accesses        │                          │
+         │     protected route      │                          │
+         │                          │                          │
+         │  2. Redirect ───────────>│                          │
+         │     ?redirect=app.com    │                          │
+         │                          │                          │
+         │                  3. User signs in                   │
+         │                          │                          │
+         │  4. Redirect <───────────│                          │
+         │     ?token=JWT_TOKEN     │                          │
+         │                          │                          │
+         │  5. Extract & store token in secure cookie          │
+         │                          │                          │
+         │  6. Validate session ───────────────────────────────>│
+         │                          │                          │
+         │  7. Session data <──────────────────────────────────│
+         │                          │                          │
+         │  8. User authenticated ✓ │                          │
 ```
 
----
+## Integration Examples
 
-## Next.js Examples
+### Next.js App Router (13+)
 
-### App Router (Next.js 13+)
+**Root Layout:**
 
 ```tsx
 // app/layout.tsx
@@ -246,6 +322,8 @@ export default function RootLayout({
 }
 ```
 
+**Protected Layout:**
+
 ```tsx
 // app/dashboard/layout.tsx
 import { ProtectedRoute } from "signifyid-client";
@@ -269,7 +347,9 @@ export default function DashboardLayout({
 }
 ```
 
-### Pages Router
+### Next.js Pages Router
+
+**Application Entry:**
 
 ```tsx
 // pages/_app.tsx
@@ -290,6 +370,8 @@ export default function App({ Component, pageProps }: AppProps) {
 }
 ```
 
+**Protected Page:**
+
 ```tsx
 // pages/dashboard.tsx
 import { ProtectedRoute, useSignifyAuth } from "signifyid-client";
@@ -299,9 +381,9 @@ function DashboardContent() {
 
   return (
     <div>
-      <h1>Welcome, {user?.name}!</h1>
+      <h1>Welcome, {user?.name}</h1>
       <p>Email: {user?.email}</p>
-      <button onClick={logout}>Logout</button>
+      <button onClick={logout}>Sign Out</button>
     </div>
   );
 }
@@ -315,11 +397,49 @@ export default function DashboardPage() {
 }
 ```
 
+### Standard React SPA
+
+```tsx
+// src/App.tsx
+import {
+  SignifyProvider,
+  ProtectedRoute,
+  useSignifyAuth,
+} from "signifyid-client";
+
+function Dashboard() {
+  const { user, logout } = useSignifyAuth();
+  return (
+    <div>
+      <h1>Welcome, {user?.name}</h1>
+      <button onClick={logout}>Sign Out</button>
+    </div>
+  );
+}
+
+export function App() {
+  return (
+    <SignifyProvider
+      config={{
+        apiUrl: process.env.REACT_APP_SIGNIFY_API_URL!,
+        loginUrl: process.env.REACT_APP_SIGNIFY_LOGIN_URL!,
+      }}
+    >
+      <ProtectedRoute>
+        <Dashboard />
+      </ProtectedRoute>
+    </SignifyProvider>
+  );
+}
+```
+
 ---
 
 ## TypeScript Support
 
-This package is written in TypeScript and includes full type definitions.
+Full TypeScript support is included out of the box. The package exports comprehensive type definitions for all components and hooks.
+
+**Exported Types:**
 
 ```tsx
 import type {
@@ -332,32 +452,44 @@ import type {
 } from "signifyid-client";
 ```
 
-### Custom User Type
-
-If your Signify iD returns additional user properties:
+**Type Safety Example:**
 
 ```tsx
-interface MyUser extends SignifyUser {
+interface ExtendedUser extends SignifyUser {
   organizationId: string;
-  role: "admin" | "user";
+  role: "admin" | "user" | "viewer";
 }
 
-const { user } = useSignifyAuth();
-const myUser = user as MyUser | null;
+export function AdminPanel() {
+  const { user } = useSignifyAuth();
+  const adminUser = user as ExtendedUser | null;
+
+  if (adminUser?.role !== "admin") {
+    return <div>Access Denied</div>;
+  }
+
+  return <div>Admin Content</div>;
+}
 ```
 
 ---
 
 ## Advanced Usage
 
-### Listen to Auth State Changes
+### Auth State Change Callbacks
+
+Listen to authentication state changes at the provider level:
 
 ```tsx
 <SignifyProvider
   config={config}
   onAuthStateChange={(state) => {
-    if (state.isAuthenticated) {
-      analytics.identify(state.user?.id);
+    if (state.isAuthenticated && state.user) {
+      // Track user authentication
+      analytics.identify(state.user.id);
+    } else {
+      // Clear user-specific data
+      analytics.reset();
     }
   }}
 >
@@ -365,89 +497,174 @@ const myUser = user as MyUser | null;
 </SignifyProvider>
 ```
 
-### Custom Redirect URL
+### Custom Redirect Behavior
 
 ```tsx
-<ProtectedRoute redirectUrl="/custom-login">
+<ProtectedRoute
+  redirectUrl="/auth/login"
+  onRedirect={() => {
+    // Custom logic before redirect
+    console.log("User will be redirected to login");
+  }}
+>
   <Dashboard />
 </ProtectedRoute>
 ```
 
 ### Manual Session Validation
 
-```tsx
-const { validateSession } = useSignifyAuth();
+Re-validate session on demand:
 
-// Re-validate session on demand
-await validateSession();
+```tsx
+import { useSignifyAuth } from "signifyid-client";
+
+export function AuthStatus() {
+  const { validateSession, isAuthenticated } = useSignifyAuth();
+
+  const handleRefresh = async () => {
+    await validateSession();
+  };
+
+  return (
+    <div>
+      <p>Status: {isAuthenticated ? "Authenticated" : "Not authenticated"}</p>
+      <button onClick={handleRefresh}>Refresh Session</button>
+    </div>
+  );
+}
 ```
 
-### Utility Functions
-
-For advanced use cases, utility functions are also exported:
+### Advanced Cookie Configuration
 
 ```tsx
-import {
-  setCookie,
-  getCookie,
-  deleteCookie,
-  getTokenFromUrl,
-  cleanUrlParams,
-  isBrowser,
-} from "signifyid-client";
+<SignifyProvider
+  config={{
+    apiUrl: "https://api.signifyid.com",
+    loginUrl: "https://signifyid.com/client/login",
+    cookieName: "my_session_token",
+    cookieMaxAge: 604800, // 7 days in seconds
+    tokenParam: "auth_token", // Custom URL parameter name
+    debug: true, // Enable verbose logging
+  }}
+>
+  {children}
+</SignifyProvider>
 ```
 
 ---
 
 ## Security Considerations
 
-- **SSR Safe**: All browser APIs are wrapped with `isBrowser()` checks
-- **Credentials**: Uses `credentials: 'include'` for cross-domain cookie support
-- **Token Cleanup**: Automatically removes token from URL after extraction
-- **Secure Cookies**: Uses `SameSite=Lax` for CSRF protection
-- **No Token Exposure**: Tokens are stored in cookies, not in JavaScript state
+The SDK implements security best practices throughout:
 
----
+- **Server-Side Rendering Safe** - All browser APIs are protected with `isBrowser()` checks
+- **Cross-Domain Credentials** - Uses `credentials: 'include'` for proper cookie handling
+- **Automatic Token Cleanup** - Token parameters are removed from URL after extraction
+- **CSRF Protection** - Cookies are set with `SameSite=Lax`
+- **No Client-Side Token Storage** - Authentication tokens are stored exclusively in secure HTTP-only cookies
+- **Session Validation** - Regular server-side session validation prevents token tampering
 
 ## Troubleshooting
 
 ### "useSignifyAuth must be used within a SignifyProvider"
 
-Make sure your component is a child of `<SignifyProvider>`:
+Ensure your component is a child of `<SignifyProvider>`:
 
 ```tsx
-// ❌ Wrong
+// ❌ Incorrect - Component outside provider
 <SignifyProvider>...</SignifyProvider>
-<MyComponent /> // Outside provider!
+<MyComponent />
 
-// ✅ Correct
+// ✅ Correct - Component inside provider
 <SignifyProvider>
-  <MyComponent /> // Inside provider
+  <MyComponent />
 </SignifyProvider>
 ```
 
-### Session not persisting after redirect
+### Session Not Persisting After Redirect
 
-1. Ensure your `apiUrl` and `loginUrl` are correct
-2. Check if CORS is configured on your backend
-3. Verify cookies are being set (check browser DevTools → Application → Cookies)
+Verify the following:
 
-### Infinite redirect loop
+1. `apiUrl` and `loginUrl` are correctly configured
+2. CORS is enabled on your backend server
+3. Cookies are being set (check DevTools → Application → Cookies)
+4. Session validation endpoint is accessible at `POST /api/client-auth/session/validate`
 
-This usually happens when session validation always returns `valid: false`. Check:
+### Infinite Redirect Loop
 
-1. Your backend is running and accessible
-2. The session validation endpoint is correct: `POST /api/client-auth/session/validate`
-3. Credentials are being sent with the request
+This typically indicates session validation is failing. Check:
+
+1. Backend service is running and accessible
+2. Session validation endpoint is properly configured
+3. Request credentials are being sent and processed correctly
+4. Server is returning valid session data in response
+
+### Debug Mode
+
+Enable debug logging for troubleshooting:
+
+```tsx
+<SignifyProvider
+  config={{
+    apiUrl: process.env.NEXT_PUBLIC_SIGNIFY_API_URL!,
+    loginUrl: process.env.NEXT_PUBLIC_SIGNIFY_LOGIN_URL!,
+    debug: true,
+  }}
+>
+  {children}
+</SignifyProvider>
+```
 
 ---
 
 ## Contributing
 
-Contributions are welcome! Please read our contributing guidelines before submitting PRs.
+We welcome contributions to improve the SDK. Please review our contributing guidelines before submitting pull requests.
+
+For bug reports or feature requests, please open an issue on our GitHub repository.
+
+---
+
+## Publishing
+
+This package is built with `tsup` and supports multiple output formats:
+
+- **CommonJS**: `dist/index.cjs` (for Node.js and bundlers)
+- **ES Modules**: `dist/index.js` (for modern browsers and build tools)
+- **TypeScript Definitions**: `dist/index.d.ts` and `dist/index.d.cts`
+
+**Build the package:**
+
+```bash
+npm run build
+```
+
+**Watch mode for development:**
+
+```bash
+npm run dev
+```
+
+**Type checking:**
+
+```bash
+npm run typecheck
+```
 
 ---
 
 ## License
 
-MIT © [Signify iD](https://signifyid.com)
+MIT License © [Signify iD](https://signifyid.com)
+
+See the [LICENSE](LICENSE) file for details.
+
+---
+
+## Support
+
+For questions, issues, or support:
+
+- 📧 Email: support@signifyid.com
+- 🌐 Website: https://signifyid.com
+- 📚 Documentation: https://docs.signifyid.com
