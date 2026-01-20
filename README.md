@@ -665,6 +665,6 @@ See the [LICENSE](LICENSE) file for details.
 
 For questions, issues, or support:
 
-- 📧 Email: support@signifyid.com
+- 📧 Email: sanjaychili838@gmail.com
 - 🌐 Website: https://signifyid.vercel.app
 - 📚 Documentation: https://docs.signifyid.com
