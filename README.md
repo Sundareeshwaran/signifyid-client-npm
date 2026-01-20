@@ -55,8 +55,8 @@ Add the required configuration to your environment file:
 
 ```bash
 # .env.local (Next.js) or .env
-NEXT_PUBLIC_SIGNIFY_API_URL=https://api.signifyid.com
-NEXT_PUBLIC_SIGNIFY_LOGIN_URL=https://signifyid.com/client/login
+NEXT_PUBLIC_SIGNIFY_API_URL=https://signifyid-api.vercel.app
+NEXT_PUBLIC_SIGNIFY_LOGIN_URL=https://signifyid.vercel.app/client/login
 ```
 
 ### Step 2: Initialize the Provider
@@ -162,8 +162,8 @@ Root provider component that establishes the authentication context throughout y
 ```tsx
 <SignifyProvider
   config={{
-    apiUrl: "https://api.signifyid.com",
-    loginUrl: "https://signifyid.com/client/login",
+    apiUrl: "https://signifyid-api.vercel.app",
+    loginUrl: "https://signifyid.vercel.app/client/login",
     debug: process.env.NODE_ENV === "development",
   }}
   onAuthStateChange={(state) => {
@@ -539,8 +539,8 @@ export function AuthStatus() {
 ```tsx
 <SignifyProvider
   config={{
-    apiUrl: "https://api.signifyid.com",
-    loginUrl: "https://signifyid.com/client/login",
+    apiUrl: "https://signifyid-api.vercel.app",
+    loginUrl: "https://signifyid.vercel.app/client/login",
     cookieName: "my_session_token",
     cookieMaxAge: 604800, // 7 days in seconds
     tokenParam: "auth_token", // Custom URL parameter name
@@ -655,7 +655,7 @@ npm run typecheck
 
 ## License
 
-MIT License © [Signify iD](https://signifyid.com)
+MIT License © [Signify iD](https://signifyid.vercel.app)
 
 See the [LICENSE](LICENSE) file for details.
 
@@ -666,5 +666,5 @@ See the [LICENSE](LICENSE) file for details.
 For questions, issues, or support:
 
 - 📧 Email: support@signifyid.com
-- 🌐 Website: https://signifyid.com
+- 🌐 Website: https://signifyid.vercel.app
 - 📚 Documentation: https://docs.signifyid.com
