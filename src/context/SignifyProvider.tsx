@@ -49,8 +49,8 @@ import {
  * ```tsx
  * <SignifyProvider
  *   config={{
- *     apiUrl: "https://api.signifyid.com",
- *     loginUrl: "https://signifyid.com/client/login"
+ *     apiUrl: "https://signifyid-api.vercel.app",
+ *     loginUrl: "https://signifyid.vercel.app/client/login"
  *   }}
  * >
  *   <App />
@@ -89,7 +89,7 @@ export function SignifyProvider({
       setIsLoading(true);
       logger.log(
         "Validating session...",
-        tokenOverride ? "(with token override)" : ""
+        tokenOverride ? "(with token override)" : "",
       );
 
       try {
@@ -104,7 +104,7 @@ export function SignifyProvider({
               "Content-Type": "application/json",
             },
             body: JSON.stringify(body),
-          }
+          },
         );
 
         if (!response.ok) {
@@ -135,7 +135,7 @@ export function SignifyProvider({
         isValidating.current = false;
       }
     },
-    [config.apiUrl, logger]
+    [config.apiUrl, logger],
   );
 
   /**
@@ -211,7 +211,7 @@ export function SignifyProvider({
 
       if (cachedSession) {
         logger.log(
-          "Using cached session from localStorage (avoiding server call)"
+          "Using cached session from localStorage (avoiding server call)",
         );
         setIsAuthenticated(true);
         setSession(cachedSession);
@@ -251,7 +251,7 @@ export function SignifyProvider({
       logout,
       validateSession: () => validateSession(),
     }),
-    [isAuthenticated, isLoading, session, login, logout, validateSession]
+    [isAuthenticated, isLoading, session, login, logout, validateSession],
   );
 
   useEffect(() => {

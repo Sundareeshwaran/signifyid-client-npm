@@ -11,8 +11,8 @@
  *   return (
  *     <SignifyProvider
  *       config={{
- *         apiUrl: "https://api.signifyid.com",
- *         loginUrl: "https://signifyid.com/client/login"
+ *         apiUrl: "https://signifyid-api.vercel.app",
+ *         loginUrl: "https://signifyid.vercel.app/client/login"
  *       }}
  *     >
  *       <ProtectedRoute>

@@ -7,10 +7,10 @@
  * Configuration options for the SignifyProvider
  */
 export interface SignifyConfig {
-  /** Backend API URL (e.g., "https://api.signifyid.com") */
+  /** Backend API URL (e.g., "https://signifyid-api.vercel.app") */
   apiUrl: string;
 
-  /** Signify iD login page URL (e.g., "https://signifyid.com/client/login") */
+  /** Signify iD login page URL (e.g., "https://signifyid.vercel.app/client/login") */
   loginUrl: string;
 
   /** Cookie name for storing session token. Default: "clientSession" */
