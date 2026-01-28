@@ -18,7 +18,7 @@ export type ResolvedSignifyConfig = Required<SignifyConfig>;
  * Context for Signify configuration
  */
 export const SignifyConfigContext = createContext<ResolvedSignifyConfig | null>(
-  null
+  null,
 );
 
 /**
@@ -36,7 +36,7 @@ export function useSignifyConfig(): ResolvedSignifyConfig {
   if (!config) {
     throw new Error(
       "[Signify SDK] useSignifyConfig must be used within a SignifyProvider. " +
-        "Wrap your app with <SignifyProvider config={{...}}>...</SignifyProvider>"
+        "Wrap your app with <SignifyProvider config={{...}}>...</SignifyProvider>",
     );
   }
 
@@ -49,8 +49,12 @@ export function useSignifyConfig(): ResolvedSignifyConfig {
  * @returns Configuration with defaults applied
  */
 export function resolveConfig(config: SignifyConfig): ResolvedSignifyConfig {
+  // Normalize apiUrl - remove trailing slashes to prevent double-slash issues
+  // when constructing API endpoints like `${apiUrl}/api/client-auth/...`
+  const normalizedApiUrl = config.apiUrl.replace(/\/+$/, "");
+
   return {
-    apiUrl: config.apiUrl,
+    apiUrl: normalizedApiUrl,
     loginUrl: config.loginUrl,
     cookieName: config.cookieName ?? DEFAULT_CONFIG.cookieName,
     cookieMaxAge: config.cookieMaxAge ?? DEFAULT_CONFIG.cookieMaxAge,
