@@ -60,6 +60,7 @@ export function resolveConfig(config: SignifyConfig): ResolvedSignifyConfig {
     cookieMaxAge: config.cookieMaxAge ?? DEFAULT_CONFIG.cookieMaxAge,
     tokenParam: config.tokenParam ?? DEFAULT_CONFIG.tokenParam,
     debug: config.debug ?? DEFAULT_CONFIG.debug,
+    env: config.env ?? DEFAULT_CONFIG.env,
   };
 }
 

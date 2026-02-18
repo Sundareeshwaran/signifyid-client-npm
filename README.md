@@ -79,6 +79,7 @@ export default function RootLayout({
           config={{
             apiUrl: process.env.NEXT_PUBLIC_SIGNIFY_API_URL!,
             loginUrl: process.env.NEXT_PUBLIC_SIGNIFY_LOGIN_URL!,
+            env: "production", // 'production' or 'development'
           }}
         >
           {children}
@@ -155,6 +156,7 @@ Root provider component that establishes the authentication context throughout y
   - `cookieMaxAge?` (number) - Cookie expiration in seconds (default: `86400`)
   - `tokenParam?` (string) - URL parameter for token extraction (default: `"token"`)
   - `debug?` (boolean) - Enable debug logging (default: `false`)
+  - `env?` (string) - Environment setting: `"production"` or `"development"`. When set to `"development"`, API calls and login redirects are disabled for security and cost-prevention (default: `"development"`)
 - `onAuthStateChange?` - Callback function invoked on authentication state changes
 
 **Example:**
@@ -164,6 +166,7 @@ Root provider component that establishes the authentication context throughout y
   config={{
     apiUrl: "https://signifyid-api.vercel.app",
     loginUrl: "https://signifyid.vercel.app/client/login",
+    env: "production",
     debug: process.env.NODE_ENV === "development",
   }}
   onAuthStateChange={(state) => {
@@ -311,6 +314,7 @@ export default function RootLayout({
           config={{
             apiUrl: process.env.NEXT_PUBLIC_SIGNIFY_API_URL!,
             loginUrl: process.env.NEXT_PUBLIC_SIGNIFY_LOGIN_URL!,
+            env: "production",
             debug: process.env.NODE_ENV === "development",
           }}
         >
@@ -423,6 +427,7 @@ export function App() {
       config={{
         apiUrl: process.env.REACT_APP_SIGNIFY_API_URL!,
         loginUrl: process.env.REACT_APP_SIGNIFY_LOGIN_URL!,
+        env: "production",
       }}
     >
       <ProtectedRoute>

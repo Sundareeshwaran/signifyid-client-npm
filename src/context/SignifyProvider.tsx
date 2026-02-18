@@ -79,6 +79,16 @@ export function SignifyProvider({
    */
   const validateSession = useCallback(
     async (tokenOverride?: string): Promise<void> => {
+      // Guardrail: Only proceed in production
+      if (config.env !== "production") {
+        logger.warn(
+          `API call (validateSession) suppressed. Current env: '${config.env}'. ` +
+            "Set env to 'production' to enable live requests.",
+        );
+        setIsLoading(false);
+        return;
+      }
+
       // Prevent concurrent validations
       if (isValidating.current) {
         logger.log("Validation already in progress, skipping...");
@@ -135,13 +145,22 @@ export function SignifyProvider({
         isValidating.current = false;
       }
     },
-    [config.apiUrl, logger],
+    [config.apiUrl, config.env, logger],
   );
 
   /**
    * Redirect to Signify iD login page
    */
   const login = useCallback((): void => {
+    // Guardrail: Only proceed in production
+    if (config.env !== "production") {
+      logger.warn(
+        `Login redirect suppressed. Current env: '${config.env}'. ` +
+          "Set env to 'production' to enable login portal access.",
+      );
+      return;
+    }
+
     if (!isBrowser()) {
       logger.warn("login() called on server, ignoring");
       return;
@@ -150,7 +169,7 @@ export function SignifyProvider({
     const loginUrl = buildLoginUrl(config.loginUrl);
     logger.log("Redirecting to login:", loginUrl);
     navigateTo(loginUrl);
-  }, [config.loginUrl, logger]);
+  }, [config.loginUrl, config.env, logger]);
 
   /**
    * Log out and clear session
@@ -158,14 +177,21 @@ export function SignifyProvider({
   const logout = useCallback(async (): Promise<void> => {
     logger.log("Logging out...");
 
-    try {
-      await fetch(`${config.apiUrl}/api/client-auth/logout`, {
-        method: "POST",
-        credentials: "include",
-      });
-      logger.log("Logout API call successful");
-    } catch (error) {
-      logger.error("Logout API error:", error);
+    // Signify-specific: only call API if in production
+    if (config.env === "production") {
+      try {
+        await fetch(`${config.apiUrl}/api/client-auth/logout`, {
+          method: "POST",
+          credentials: "include",
+        });
+        logger.log("Logout API call successful");
+      } catch (error) {
+        logger.error("Logout API error:", error);
+      }
+    } else {
+      logger.log(
+        `Logout API call skipped. Current env: '${config.env}'. Clearing local state only.`,
+      );
     }
 
     // Clear state
@@ -178,9 +204,13 @@ export function SignifyProvider({
 
     // Reload page to ensure clean state
     if (isBrowser()) {
+      // Guardrail: Skip reload in non-production if it might cause issues,
+      // but usually reload is safe. However, the user specifically mentioned
+      // not initiating requests or attempting to verify the client via login URL.
+      // We'll keep reload for clean state unless it's considered part of "login verification".
       reloadPage();
     }
-  }, [config.apiUrl, config.cookieName, logger]);
+  }, [config.apiUrl, config.cookieName, config.env, logger]);
 
   /**
    * Handle token from URL on mount

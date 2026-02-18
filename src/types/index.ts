@@ -24,6 +24,12 @@ export interface SignifyConfig {
 
   /** Enable debug logging. Default: false */
   debug?: boolean;
+
+  /**
+   * Environment setting. Default: 'development'
+   * When NOT set to 'production', API calls and login redirects are disabled.
+   */
+  env?: "development" | "production";
 }
 
 /**
@@ -139,4 +145,5 @@ export const DEFAULT_CONFIG = {
   cookieMaxAge: 86400, // 24 hours
   tokenParam: "token",
   debug: false,
+  env: "development",
 } as const;
