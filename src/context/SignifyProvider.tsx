@@ -43,6 +43,23 @@ import {
 } from "../utils/storage";
 
 /**
+ * Mock data for development environment
+ */
+const MOCK_DEV_USER = {
+  id: "dev-user-123",
+  email: "dev@signifyid.example",
+  name: "Development User",
+  avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=dev",
+};
+
+const MOCK_DEV_SESSION = {
+  valid: true,
+  user: MOCK_DEV_USER,
+  expiresAt: new Date(Date.now() + 86400000).toISOString(), // 24 hours from now
+  token: "dev-mock-token",
+};
+
+/**
  * SignifyProvider - Wrap your app with this provider to enable Signify iD authentication
  *
  * @example
@@ -79,12 +96,14 @@ export function SignifyProvider({
    */
   const validateSession = useCallback(
     async (tokenOverride?: string): Promise<void> => {
-      // Guardrail: Only proceed in production
+      // Guardrail: Auto-authenticate in development
       if (config.env !== "production") {
-        logger.warn(
-          `API call (validateSession) suppressed. Current env: '${config.env}'. ` +
-            "Set env to 'production' to enable live requests.",
+        logger.log(
+          `Auto-authenticating in development mode ('${config.env}'). ` +
+            "Set env to 'production' for live backend validation.",
         );
+        setIsAuthenticated(true);
+        setSession(MOCK_DEV_SESSION);
         setIsLoading(false);
         return;
       }
@@ -236,6 +255,13 @@ export function SignifyProvider({
       // Validate with the token
       validateSession(token);
     } else {
+      // In development mode, we always want to be "logged in" automatically
+      // if no specific token is being handled from the URL.
+      if (config.env !== "production") {
+        validateSession();
+        return;
+      }
+
       // First, check if we have a cached session in localStorage
       const cachedSession = getCachedSession();
 
